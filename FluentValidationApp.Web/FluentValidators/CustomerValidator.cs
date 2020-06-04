@@ -42,7 +42,7 @@ namespace FluentValidationApp.Web.FluentValidators
 
             RuleFor(x => x.Gender).IsInEnum().WithMessage("{PropertyName} alanı Man = 1 and Women = 2 olmalıdır");
 
-            RuleForEach(x => x.Addresses).NotNull().WithMessage("adres yok").SetValidator(new AddressValidator());
+            RuleForEach(x => x.Addresses).SetValidator(new AddressValidator());
         }
     }
 }

@@ -1,62 +1,36 @@
-﻿using AutoMapper;
-using FluentValidation;
-using FluentValidation.Results;
-using FluentValidationApp.Web.DTOs;
-using FluentValidationApp.Web.FluentValidators;
-using FluentValidationApp.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using FluentValidationApp.Web.Models;
+using FluentValidation;
 
 namespace FluentValidationApp.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersApiController : ControllerBase
+    public class Customers1Controller : ControllerBase
     {
         private readonly AppDbContext _context;
         private readonly IValidator<Customer> _custamerValidator;
-        private readonly IMapper _mapper;
 
-        public CustomersApiController(AppDbContext context, IValidator<Customer> custamerValidator, IMapper mapper)
+        public Customers1Controller(AppDbContext context,IValidator<Customer> custamerValidator)
         {
             _context = context;
             _custamerValidator = custamerValidator;
-            _mapper = mapper;
         }
 
-        //[Route("Mapping")]
-        //[HttpGet]
-        //public IActionResult MappingOrnek()
-        //{
-        //    Customer customer = new Customer
-        //    {
-        //        Name = "Bayram Eren",
-        //        Email = "bayram.eren@outlook.com.tr",
-        //        Age = 28,
-        //       // CreditCard = new CreditCard
-        //        {
-        //            Number = "2344",
-        //            ValidDate = DateTime.Now
-        //        }
-        //    };
-
-        //    return Ok(_mapper.Map<CustomerDto>(customer));
-        //}
-
-        // GET: api/CustomersApi
+        // GET: api/Customers1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-            var customer = await _context.Customers.ToListAsync();
-
-            return _mapper.Map<List<CustomerDto>>(customer);
+            return await _context.Customers.ToListAsync();
         }
 
-        // GET: api/CustomersApi/5
+        // GET: api/Customers1/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
@@ -70,7 +44,7 @@ namespace FluentValidationApp.Web.Controllers
             return customer;
         }
 
-        // PUT: api/CustomersApi/5
+        // PUT: api/Customers1/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
@@ -102,21 +76,13 @@ namespace FluentValidationApp.Web.Controllers
             return NoContent();
         }
 
-        // POST: api/CustomersApi
+        // POST: api/Customers1
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
             var customerResult = _custamerValidator.Validate(customer);
-
-
-            //AddressValidator validationRules = new AddressValidator();
-            //ValidationResult result;
-            //customer.Addresses.ToList().ForEach(x =>
-            //{
-            //    result =  validationRules.Validate(x);
-            //});
 
             if (!customerResult.IsValid)
             {
@@ -133,7 +99,7 @@ namespace FluentValidationApp.Web.Controllers
             return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
         }
 
-        // DELETE: api/CustomersApi/5
+        // DELETE: api/Customers1/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Customer>> DeleteCustomer(int id)
         {
